@@ -1,7 +1,7 @@
-const API_URL = process.env.REACT_APP_API_URL
+const URL_ = process.env.REACT_APP_API_URL
 
 export const signupRequest = payload => {
-	return fetch(`${API_URL}/auth/signup`, {
+	return fetch(`${URL_}/auth/signup`, {
 		credentials: 'include',
 		method: 'POST',
 		headers: {
@@ -12,7 +12,7 @@ export const signupRequest = payload => {
 }
 
 export const loginRequest = payload => {
-	return fetch(`${API_URL}/auth/login`, {
+	return fetch(`${URL_}/auth/login`, {
 		credentials: 'include',
 		method: 'POST',
 		headers: {
@@ -23,21 +23,21 @@ export const loginRequest = payload => {
 }
 
 export const logoutRequest = async () => {
-	await fetch(`${API_URL}/auth/logout`, {
+	await fetch(`${URL_}/auth/logout`, {
 		credentials: 'include',
 		method: 'POST',
 	})
 }
 
 export const renewTokenRequest = (userId) => {
-	return fetch(`${API_URL}/auth/renew-token/${userId}`, {
+	return fetch(`${URL_}/auth/renew-token/${userId}`, {
 		credentials: 'include',
 		method: 'POST',
 	}).then(res => res.json())
 }
 
 export const editUserRequest = async (userId, payload) => {
-	return fetch(`${API_URL}/user/edit/${userId}`, {
+	return fetch(`${URL_}/user/edit/${userId}`, {
 		credentials: 'include',
 		method: 'PUT',
 		body: payload
