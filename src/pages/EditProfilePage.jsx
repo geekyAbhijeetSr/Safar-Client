@@ -23,6 +23,8 @@ function EditProfilePage() {
 	const theme = useTheme()
 	const dispatch = useDispatch()
 
+	document.title = 'Safar - Edit Profile'
+
 	const [bannerImage, setBannerImage] = useState(null)
 	const [openBannerCropper, setOpenBannerCropper] = useState(false)
 	const [croppedBannerImage, setCroppedBannerImage] = useState(null)

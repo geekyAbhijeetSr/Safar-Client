@@ -23,6 +23,7 @@ function SignUpPage() {
 		pass: false,
 		conf: false,
 	})
+	document.title = 'Safar - Join Now'
 	const isLogin = useSelector(state => !!state.auth.user)
 	const theme = useTheme()
 	const navigate = useNavigate()

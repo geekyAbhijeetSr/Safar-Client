@@ -12,6 +12,8 @@ function FollowingFeedPage() {
 	const [triggerFetch, setTriggerFetch] = useState(true)
 	const dispatch = useDispatch()
 
+	document.title = 'Safar - Following'
+
 	const observer = useRef()
 	const lastPostRef = useCallback(
 		node => {

@@ -24,6 +24,8 @@ function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false)
 	const [rememberMe, setRememberMe] = useState(false)
 
+	document.title = 'Safar - Welcome'
+
 	const handleChange = event => {
 		setRememberMe(event.target.checked)
 	}

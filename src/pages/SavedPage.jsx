@@ -10,6 +10,8 @@ function SavedPage() {
 	const [triggerFetch, setTriggerFetch] = useState(true)
 	const dispatch = useDispatch()
 
+	document.title = 'Safar - Saved'
+
 	const observer = useRef()
 	const lastPostRef = useCallback(
 		node => {

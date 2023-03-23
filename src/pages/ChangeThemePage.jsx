@@ -18,6 +18,8 @@ function ChangeThemePage() {
 	const selectedTheme = useSelector(state => state.theme)
 	const dispatch = useDispatch()
 
+	document.title = 'Safar - Theme'
+
 	const handleChange = event => {
 		dispatch(changeTheme(event.target.value))
 	}

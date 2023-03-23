@@ -26,6 +26,8 @@ function SearchResultPage() {
 	const searchQuery = queryParams.get('q')
 	const count = useRef(0)
 
+	document.title = 'Safar - Result'
+
 	useEffect(() => {
 		count.current++
 		if (searchQuery === query) return

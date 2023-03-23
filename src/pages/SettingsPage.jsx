@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom'
 function SettingsPage() {
 	const theme = useTheme()
 	const navigate = useNavigate()
+
+	document.title = 'Safar - Settings'
 	
 	return (
 		<Box

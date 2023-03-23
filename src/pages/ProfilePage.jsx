@@ -11,6 +11,8 @@ function ProfilePage() {
 	const { fetchingProfileUser, profileUser } = useSelector(state => state.post)
 	const dispatch = useDispatch()
 
+	document.title = `Safar - ${username}`
+
 	useEffect(() => {
 		dispatch(getProfileUser(username))
 	}, [username, dispatch])

@@ -12,6 +12,8 @@ function GlobalFeedPage() {
 	const [triggerFetch, setTriggerFetch] = useState(true)
 	const dispatch = useDispatch()
 
+	document.title = 'Safar - Global'
+
 	const observer = useRef()
 	const lastPostRef = useCallback(
 		node => {

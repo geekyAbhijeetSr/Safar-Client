@@ -24,6 +24,8 @@ function ResetPasswordPage() {
 	const location = useLocation()
 	const queryParams = new URLSearchParams(location.search)
 
+	document.title = 'Safar - Reset Password'
+
 	const token = queryParams.get('token')
 	const [showPassword, setShowPassword] = useState({
 		new: false,

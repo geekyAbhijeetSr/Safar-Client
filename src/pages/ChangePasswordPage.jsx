@@ -27,6 +27,9 @@ function ChangePasswordPage() {
 		new: false,
 		conf: false,
 	})
+
+	document.title = 'Safar - Change Password'
+	
 	const formik = useFormik({
 		initialValues: {
 			old_password: '',

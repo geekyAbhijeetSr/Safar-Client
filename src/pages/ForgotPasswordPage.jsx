@@ -19,6 +19,7 @@ function ForgotPasswordPage() {
 	const matchMdUp = useMediaQuery(theme.breakpoints.up('md'))
 	const matchSmUp = useMediaQuery(theme.breakpoints.up('sm'))
 	const match375Up = useMediaQuery('(min-width: 375px)')
+	document.title = 'Safar - Forgot Password'
 	const formik = useFormik({
 		initialValues: {
 			email: '',
