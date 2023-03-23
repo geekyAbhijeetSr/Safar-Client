@@ -2,9 +2,14 @@ import { Player } from '@lottiefiles/react-lottie-player'
 import { Box, Skeleton, Stack, Typography } from '@mui/material'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import SearchItem from '../components/SearchItem'
-import { getMoreSearchResult } from '../redux/features/search-result-slice'
+import {
+	getMoreSearchResult,
+	getNewSearchResult,
+	resetSearchResultState,
+	setSearchQuery,
+} from '../redux/features/search-result-slice'
 
 function SearchResultPage() {
 	const {
@@ -15,7 +20,25 @@ function SearchResultPage() {
 	} = useSelector(state => state.search_result)
 	const navigate = useNavigate()
 	const [triggerFetch, setTriggerFetch] = useState(true)
+	const location = useLocation()
 	const dispatch = useDispatch()
+	const queryParams = new URLSearchParams(location.search)
+	const searchQuery = queryParams.get('q')
+	const count = useRef(0)
+
+	useEffect(() => {
+		count.current++
+		if (searchQuery === query) return
+
+		dispatch(resetSearchResultState())
+		if (!searchQuery) return
+		dispatch(setSearchQuery(searchQuery))
+		dispatch(
+			getNewSearchResult({
+				search_query: searchQuery,
+			})
+		)
+	}, [searchQuery, dispatch, query])
 
 	const observer = useRef()
 	const lastItemRef = useCallback(

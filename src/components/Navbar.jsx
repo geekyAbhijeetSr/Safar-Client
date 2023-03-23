@@ -29,11 +29,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../redux/features/auth-slice'
 import { resetPostState } from '../redux/features/post-slice'
 import { debounce } from '../helper/utils'
-import {
-	getNewSearchResult,
-	resetSearchResultState,
-	setSearchQuery,
-} from '../redux/features/search-result-slice'
 
 function Navbar() {
 	const [postImage, setPostImage] = useState(null)
@@ -44,8 +39,10 @@ function Navbar() {
 	const location = useLocation()
 	const dispatch = useDispatch()
 	const inputRef = useRef()
-	const count = useRef(0)
 	const { user } = useSelector(state => state.auth)
+
+	const queryParams = new URLSearchParams(location.search)
+	const searchQuery = queryParams.get('q')
 
 	// menu handler
 	const [anchorEl, setAnchorEl] = useState(null)
@@ -69,45 +66,25 @@ function Navbar() {
 		e.target.value = ''
 	}
 
-	const getUsers = debounce(value => {
-		const queryParams = new URLSearchParams(location.search)
-		const searchQuery = queryParams.get('q')
-		const query = encodeURIComponent(value)
+	const setQuery = debounce(e => {
+		const query = encodeURIComponent(e.target.value)
 
-		if (searchQuery !== query) {
+		if (searchQuery !== query || query === '') {
 			navigate(`/result?q=${query}`)
-			count.current++
 		}
-
-		if (!value && location.pathname === '/result') {
-			navigate(-1 * count.current)
-			count.current = 0
-		}
-
-		dispatch(resetSearchResultState())
-		dispatch(setSearchQuery(value))
-		dispatch(
-			getNewSearchResult({
-				search_query: value,
-			})
-		)
 	})
-
-	const searchQuery = e => {
-		getUsers(e.target.value)
-	}
 
 	useEffect(() => {
 		if (location.pathname !== '/result') {
 			inputRef.current.value = ''
-		} else {
-			if (inputRef.current.value) return
-			const queryParams = new URLSearchParams(location.search)
-			const searchQuery = queryParams.get('q')
-			inputRef.current.value = searchQuery
-			getUsers(searchQuery)
 		}
-	}, [location.pathname, getUsers, location.search])
+	}, [location.pathname])
+
+	useEffect(() => {
+		if (searchQuery && !inputRef.current.value) {
+			inputRef.current.value = searchQuery
+		}
+	}, [searchQuery])
 
 	return (
 		<>
@@ -190,7 +167,7 @@ function Navbar() {
 									type='text'
 									placeholder='Search...'
 									ref={inputRef}
-									onChange={searchQuery}
+									onChange={setQuery}
 								/>
 								<Box
 									component='span'
