@@ -664,11 +664,11 @@ const postSlice = createSlice({
 
 				if (state.globalPosts?.docs?.length > 0) {
 					const globalPosts = state.globalPosts.docs.map(doc => {
-						if (doc.user._id === payload.unfollowing._id) {
-							const foundIndex = doc.user.followers.findIndex(
+						if (doc.author._id === payload.unfollowing._id) {
+							const foundIndex = doc.author.followers.findIndex(
 								f => f === payload.user._id
 							)
-							doc.user.followers.splice(foundIndex, 1)
+							doc.author.followers.splice(foundIndex, 1)
 						}
 						return doc
 					})
