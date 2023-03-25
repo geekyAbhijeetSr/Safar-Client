@@ -120,11 +120,13 @@ const searchResultSlice = createSlice({
 
 				const searchResultDocs = [...state.searchResult.docs]
 
-				const foundIndex = searchResultDocs.findIndex(doc => doc._id === userId)
+				const indexOfUser = searchResultDocs.findIndex(doc => doc._id === userId)
 
-				if (!searchResultDocs[foundIndex].followers.includes(currentUser)) {
-					searchResultDocs[foundIndex].followers.push(currentUser)
+				if (!searchResultDocs[indexOfUser].followers.includes(currentUser)) {
+					searchResultDocs[indexOfUser].followers.push(currentUser)
+					state.searchResult.docs = searchResultDocs
 				}
+
 			})
 			.addCase(inSearchFollowUser.fulfilled, (state, action) => {
 				// const { _id, avatar, username, name, followers, following } =
@@ -149,13 +151,15 @@ const searchResultSlice = createSlice({
 
 				const searchResultDocs = [...state.searchResult.docs]
 
-				const foundIndex = searchResultDocs.findIndex(doc => doc._id === userId)
+				const indexOfUser = searchResultDocs.findIndex(doc => doc._id === userId)
 
-				const indexOfCurrUser = searchResultDocs[foundIndex].followers.findIndex(f => f === currentUser)
+				const indexOfCurrUser = searchResultDocs[indexOfUser].followers.findIndex(f => f === currentUser)
 
 				if (indexOfCurrUser !== -1) {
-					searchResultDocs[foundIndex].followers.splice(indexOfCurrUser, 1)
+					searchResultDocs[indexOfUser].followers.splice(indexOfCurrUser, 1)
+					state.searchResult.docs = searchResultDocs
 				}
+
 			})
 			.addCase(inSearchUnfollowUser.fulfilled, (state, action) => {
 				// const { _id, avatar, username, name, followers, following } =
