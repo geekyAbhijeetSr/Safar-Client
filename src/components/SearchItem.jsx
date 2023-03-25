@@ -15,7 +15,10 @@ import {
 import React, { forwardRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { inSearchFollowUser, inSearchUnfollowUser } from '../redux/features/search-result-slice'
+import {
+	inSearchFollowUser,
+	inSearchUnfollowUser,
+} from '../redux/features/search-result-slice'
 
 const SearchItem = forwardRef(function (props, ref) {
 	const theme = useTheme()
@@ -25,9 +28,11 @@ const SearchItem = forwardRef(function (props, ref) {
 
 	const followOrUnfollow = () => {
 		if (item.followers.includes(user._id)) {
-			dispatch(inSearchUnfollowUser(item._id))
+			dispatch(
+				inSearchUnfollowUser({ userId: item._id, currentUser: user._id })
+			)
 		} else {
-			dispatch(inSearchFollowUser(item._id))
+			dispatch(inSearchFollowUser({ userId: item._id, currentUser: user._id }))
 		}
 	}
 

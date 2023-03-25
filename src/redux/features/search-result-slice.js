@@ -36,7 +36,8 @@ export const getMoreSearchResult = createAsyncThunk(
 export const inSearchFollowUser = createAsyncThunk(
 	'search-result/followUser',
 	async (payload, thunkAPI) => {
-		const response = await followUserRequest(payload)
+		const { userId } = payload
+		const response = await followUserRequest(userId)
 		if (response.ok) {
 			return response
 		}
@@ -47,7 +48,8 @@ export const inSearchFollowUser = createAsyncThunk(
 export const inSearchUnfollowUser = createAsyncThunk(
 	'search-result/unfollowUser',
 	async (payload, thunkAPI) => {
-		const response = await unfollowUserRequest(payload)
+		const { userId } = payload
+		const response = await unfollowUserRequest(userId)
 		if (response.ok) {
 			return response
 		}
@@ -97,7 +99,10 @@ const searchResultSlice = createSlice({
 			.addCase(getMoreSearchResult.fulfilled, (state, action) => {
 				state.fetchingMoreSearchResult = false
 				if (state.searchResult?.docs) {
-					const fetchedDocs = [...state.searchResult.docs, ...action.payload.docs]
+					const fetchedDocs = [
+						...state.searchResult.docs,
+						...action.payload.docs,
+					]
 					action.payload.docs = fetchedDocs
 				}
 				state.searchResult = action.payload
@@ -110,45 +115,66 @@ const searchResultSlice = createSlice({
 			})
 
 			// inSearchFollowUser Request
-			.addCase(inSearchFollowUser.fulfilled, (state, action) => {
-				const { _id, avatar, username, name, followers, following } =
-					action.payload.following
+			.addCase(inSearchFollowUser.pending, (state, action) => {
+				const { userId, currentUser } = action.meta.arg
 
-				let temp = {
-					_id,
-					name,
-					username,
-					avatar,
-					followers,
-					following,
+				const searchResultDocs = [...state.searchResult.docs]
+
+				const foundIndex = searchResultDocs.findIndex(doc => doc._id === userId)
+
+				if (!searchResultDocs[foundIndex].followers.includes(currentUser)) {
+					searchResultDocs[foundIndex].followers.push(currentUser)
 				}
-
-				const foundIndex = state.searchResult.docs.findIndex(
-					doc => doc._id === temp._id
-				)
-
-				state.searchResult.docs[foundIndex] = temp
+			})
+			.addCase(inSearchFollowUser.fulfilled, (state, action) => {
+				// const { _id, avatar, username, name, followers, following } =
+				// 	action.payload.following
+				// let temp = {
+				// 	_id,
+				// 	name,
+				// 	username,
+				// 	avatar,
+				// 	followers,
+				// 	following,
+				// }
+				// const foundIndex = state.searchResult.docs.findIndex(
+				// 	doc => doc._id === temp._id
+				// )
+				// state.searchResult.docs[foundIndex] = temp
 			})
 
 			// inSearchUnfollowUser Request
-			.addCase(inSearchUnfollowUser.fulfilled, (state, action) => {
-				const { _id, avatar, username, name, followers, following } =
-					action.payload.unfollowing
+			.addCase(inSearchUnfollowUser.pending, (state, action) => {
+				const { userId, currentUser } = action.meta.arg
 
-				let temp = {
-					_id,
-					name,
-					username,
-					avatar,
-					followers,
-					following,
+				const searchResultDocs = [...state.searchResult.docs]
+
+				const foundIndex = searchResultDocs.findIndex(doc => doc._id === userId)
+
+				const indexOfCurrUser = searchResultDocs[foundIndex].followers.findIndex(f => f === currentUser)
+
+				if (indexOfCurrUser !== -1) {
+					searchResultDocs[foundIndex].followers.splice(indexOfCurrUser, 1)
 				}
+			})
+			.addCase(inSearchUnfollowUser.fulfilled, (state, action) => {
+				// const { _id, avatar, username, name, followers, following } =
+				// 	action.payload.unfollowing
 
-				const foundIndex = state.searchResult.docs.findIndex(
-					doc => doc._id === temp._id
-				)
+				// let temp = {
+				// 	_id,
+				// 	name,
+				// 	username,
+				// 	avatar,
+				// 	followers,
+				// 	following,
+				// }
 
-				state.searchResult.docs[foundIndex] = temp
+				// const foundIndex = state.searchResult.docs.findIndex(
+				// 	doc => doc._id === temp._id
+				// )
+
+				// state.searchResult.docs[foundIndex] = temp
 			})
 	},
 })
