@@ -106,7 +106,7 @@ const Post = forwardRef(function Post(props, ref) {
 	}
 
 	const toggleLike = () => {
-		dispatch(toggleLikePost(post._id))
+		dispatch(toggleLikePost({postId: post._id, currentUser: user._id}))
 	}
 
 	const toggleSave = () => {
