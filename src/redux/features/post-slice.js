@@ -160,7 +160,8 @@ export const toggleLikePost = createAsyncThunk(
 export const toggleSavePost = createAsyncThunk(
 	'post/toggleSavePost',
 	async (payload, thunkAPI) => {
-		const response = await toggleSavePostRequest(payload)
+		const { postId } = payload
+		const response = await toggleSavePostRequest(postId)
 		if (response.ok) {
 			return response
 		}
@@ -496,168 +497,192 @@ const postSlice = createSlice({
 					const Posts = [...state.userPosts.docs]
 					const indexOfPost = Posts.findIndex(post => post._id === postId)
 
-					if (Posts[indexOfPost].likedBy.includes(currentUser)) {
-						// unlike post
-						const indexOfCurrUser = Posts[indexOfPost].likedBy.findIndex(
-							user => user === currentUser
-						)
-						Posts[indexOfPost].likedBy.splice(indexOfCurrUser, 1)
-						Posts[indexOfPost].noOfLikes--
-					} else {
-						// like post
-						Posts[indexOfPost].likedBy.push(currentUser)
-						Posts[indexOfPost].noOfLikes++
-					}
+					if (indexOfPost !== -1) {
+						if (Posts[indexOfPost].likedBy.includes(currentUser)) {
+							// unlike post
+							const indexOfCurrUser = Posts[indexOfPost].likedBy.findIndex(
+								user => user === currentUser
+							)
+							Posts[indexOfPost].likedBy.splice(indexOfCurrUser, 1)
+							Posts[indexOfPost].noOfLikes--
+						} else {
+							// like post
+							Posts[indexOfPost].likedBy.push(currentUser)
+							Posts[indexOfPost].noOfLikes++
+						}
 
-					state.userPosts.docs = Posts
+						state.userPosts.docs = Posts
+					}
 				}
 
 				if (state.globalPosts?.docs?.length > 0) {
 					const Posts = [...state.globalPosts.docs]
 					const indexOfPost = Posts.findIndex(post => post._id === postId)
 
-					if (Posts[indexOfPost].likedBy.includes(currentUser)) {
-						// unlike post
-						const indexOfCurrUser = Posts[indexOfPost].likedBy.findIndex(
-							user => user === currentUser
-						)
-						Posts[indexOfPost].likedBy.splice(indexOfCurrUser, 1)
-						Posts[indexOfPost].noOfLikes--
-					} else {
-						// like post
-						Posts[indexOfPost].likedBy.push(currentUser)
-						Posts[indexOfPost].noOfLikes++
-					}
+					if (indexOfPost !== -1) {
+						if (Posts[indexOfPost].likedBy.includes(currentUser)) {
+							// unlike post
+							const indexOfCurrUser = Posts[indexOfPost].likedBy.findIndex(
+								user => user === currentUser
+							)
+							Posts[indexOfPost].likedBy.splice(indexOfCurrUser, 1)
+							Posts[indexOfPost].noOfLikes--
+						} else {
+							// like post
+							Posts[indexOfPost].likedBy.push(currentUser)
+							Posts[indexOfPost].noOfLikes++
+						}
 
-					state.globalPosts.docs = Posts
+						state.globalPosts.docs = Posts
+					}
 				}
 
 				if (state.followingPosts?.docs?.length > 0) {
 					const Posts = [...state.followingPosts.docs]
 					const indexOfPost = Posts.findIndex(post => post._id === postId)
 
-					if (Posts[indexOfPost].likedBy.includes(currentUser)) {
-						// unlike post
-						const indexOfCurrUser = Posts[indexOfPost].likedBy.findIndex(
-							user => user === currentUser
-						)
-						Posts[indexOfPost].likedBy.splice(indexOfCurrUser, 1)
-						Posts[indexOfPost].noOfLikes--
-					} else {
-						// like post
-						Posts[indexOfPost].likedBy.push(currentUser)
-						Posts[indexOfPost].noOfLikes++
-					}
+					if (indexOfPost !== -1) {
+						if (Posts[indexOfPost].likedBy.includes(currentUser)) {
+							// unlike post
+							const indexOfCurrUser = Posts[indexOfPost].likedBy.findIndex(
+								user => user === currentUser
+							)
+							Posts[indexOfPost].likedBy.splice(indexOfCurrUser, 1)
+							Posts[indexOfPost].noOfLikes--
+						} else {
+							// like post
+							Posts[indexOfPost].likedBy.push(currentUser)
+							Posts[indexOfPost].noOfLikes++
+						}
 
-					state.followingPosts.docs = Posts
+						state.followingPosts.docs = Posts
+					}
 				}
 
 				if (state.savedPosts?.docs?.length > 0) {
 					const Posts = [...state.savedPosts.docs]
 					const indexOfPost = Posts.findIndex(post => post._id === postId)
 
-					if (Posts[indexOfPost].likedBy.includes(currentUser)) {
-						// unlike post
-						const indexOfCurrUser = Posts[indexOfPost].likedBy.findIndex(
-							user => user === currentUser
-						)
-						Posts[indexOfPost].likedBy.splice(indexOfCurrUser, 1)
-						Posts[indexOfPost].noOfLikes--
-					} else {
-						// like post
-						Posts[indexOfPost].likedBy.push(currentUser)
-						Posts[indexOfPost].noOfLikes++
+					if (indexOfPost !== -1) {
+						if (Posts[indexOfPost].likedBy.includes(currentUser)) {
+							// unlike post
+							const indexOfCurrUser = Posts[indexOfPost].likedBy.findIndex(
+								user => user === currentUser
+							)
+							Posts[indexOfPost].likedBy.splice(indexOfCurrUser, 1)
+							Posts[indexOfPost].noOfLikes--
+						} else {
+							// like post
+							Posts[indexOfPost].likedBy.push(currentUser)
+							Posts[indexOfPost].noOfLikes++
+						}
+
+						state.savedPosts.docs = Posts
 					}
-
-					state.savedPosts.docs = Posts
 				}
-			})
-			.addCase(toggleLikePost.fulfilled, (state, action) => {
-				// const post = action.payload.post
-
-				// if (state.userPosts?.docs?.length > 0) {
-				// 	const foundIndex = state.userPosts.docs.findIndex(
-				// 		doc => doc._id === post._id
-				// 	)
-
-				// 	if (foundIndex !== -1) {
-				// 		state.userPosts.docs[foundIndex] = post
-				// 	}
-				// }
-
-				// if (state.globalPosts?.docs?.length > 0) {
-				// 	const foundIndex = state.globalPosts.docs.findIndex(
-				// 		doc => doc._id === post._id
-				// 	)
-
-				// 	if (foundIndex !== -1) {
-				// 		state.globalPosts.docs[foundIndex] = post
-				// 	}
-				// }
-
-				// if (state.followingPosts?.docs?.length > 0) {
-				// 	const foundIndex = state.followingPosts.docs.findIndex(
-				// 		doc => doc._id === post._id
-				// 	)
-
-				// 	if (foundIndex !== -1) {
-				// 		state.followingPosts.docs[foundIndex] = post
-				// 	}
-				// }
-
-				// if (state.savedPosts?.docs?.length > 0) {
-				// 	const foundIndex = state.savedPosts.docs.findIndex(
-				// 		doc => doc._id === post._id
-				// 	)
-
-				// 	if (foundIndex !== -1) {
-				// 		state.savedPosts.docs[foundIndex] = post
-				// 	}
-				// }
 			})
 
 			// toggleSavePost request
-			.addCase(toggleSavePost.fulfilled, (state, action) => {
-				const post = action.payload.post
+			.addCase(toggleSavePost.pending, (state, action) => {
+				const { postId, currentUser } = action.meta.arg
 
 				if (state.userPosts?.docs?.length > 0) {
-					const foundIndex = state.userPosts.docs.findIndex(
-						doc => doc._id === post._id
-					)
+					const Posts = [...state.userPosts.docs]
+					const indexOfPost = Posts.findIndex(post => post._id === postId)
 
-					if (foundIndex !== -1) {
-						state.userPosts.docs[foundIndex] = post
+					if (indexOfPost !== -1) {
+						if (Posts[indexOfPost].savedBy.includes(currentUser)) {
+							// unsave post
+							const indexOfCurrUser = Posts[indexOfPost].savedBy.findIndex(
+								user => user === currentUser
+							)
+							Posts[indexOfPost].savedBy.splice(indexOfCurrUser, 1)
+							Posts[indexOfPost].noOfSaves--
+						} else {
+							// save post
+							Posts[indexOfPost].savedBy.push(currentUser)
+							Posts[indexOfPost].noOfSaves++
+						}
+
+						state.userPosts.docs = Posts
 					}
 				}
 
 				if (state.globalPosts?.docs?.length > 0) {
-					const foundIndex = state.globalPosts.docs.findIndex(
-						doc => doc._id === post._id
-					)
+					const Posts = [...state.globalPosts.docs]
+					const indexOfPost = Posts.findIndex(post => post._id === postId)
 
-					if (foundIndex !== -1) {
-						state.globalPosts.docs[foundIndex] = post
+					if (indexOfPost !== -1) {
+						if (Posts[indexOfPost].savedBy.includes(currentUser)) {
+							// unsave post
+							const indexOfCurrUser = Posts[indexOfPost].savedBy.findIndex(
+								user => user === currentUser
+							)
+							Posts[indexOfPost].savedBy.splice(indexOfCurrUser, 1)
+							Posts[indexOfPost].noOfSaves--
+						} else {
+							// save post
+							Posts[indexOfPost].savedBy.push(currentUser)
+							Posts[indexOfPost].noOfSaves++
+						}
+
+						state.globalPosts.docs = Posts
 					}
 				}
 
 				if (state.followingPosts?.docs?.length > 0) {
-					const foundIndex = state.followingPosts.docs.findIndex(
-						doc => doc._id === post._id
-					)
+					const Posts = [...state.followingPosts.docs]
+					const indexOfPost = Posts.findIndex(post => post._id === postId)
 
-					if (foundIndex !== -1) {
-						state.followingPosts.docs[foundIndex] = post
+					if (indexOfPost !== -1) {
+						if (Posts[indexOfPost].savedBy.includes(currentUser)) {
+							// unsave post
+							const indexOfCurrUser = Posts[indexOfPost].savedBy.findIndex(
+								user => user === currentUser
+							)
+							Posts[indexOfPost].savedBy.splice(indexOfCurrUser, 1)
+							Posts[indexOfPost].noOfSaves--
+						} else {
+							// save post
+							Posts[indexOfPost].savedBy.push(currentUser)
+							Posts[indexOfPost].noOfSaves++
+						}
+
+						state.followingPosts.docs = Posts
 					}
 				}
 
 				if (state.savedPosts?.docs?.length > 0) {
-					const foundIndex = state.savedPosts.docs.findIndex(
+					const Posts = [...state.savedPosts.docs]
+					const indexOfPost = Posts.findIndex(post => post._id === postId)
+
+					if (indexOfPost !== -1) {
+						if (Posts[indexOfPost].savedBy.includes(currentUser)) {
+							// unsave post
+							const indexOfCurrUser = Posts[indexOfPost].savedBy.findIndex(
+								user => user === currentUser
+							)
+							Posts[indexOfPost].savedBy.splice(indexOfCurrUser, 1)
+							Posts[indexOfPost].noOfSaves--
+						} else {
+							// save post
+							Posts[indexOfPost].savedBy.push(currentUser)
+							Posts[indexOfPost].noOfSaves++
+						}
+
+						state.savedPosts.docs = Posts
+					}
+				}
+			})
+			.addCase(toggleSavePost.fulfilled, (state, action) => {
+				const post = action.payload.post
+
+				if (state.savedPosts?.docs?.length > 0) {
+					const indexOfPost = state.savedPosts.docs.findIndex(
 						doc => doc._id === post._id
 					)
 
-					if (foundIndex !== -1) {
-						state.savedPosts.docs[foundIndex] = post
-					} else {
+					if (indexOfPost === -1) {
 						state.savedPosts.docs.unshift(post)
 					}
 				}

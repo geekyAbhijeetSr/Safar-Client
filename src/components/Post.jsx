@@ -110,7 +110,7 @@ const Post = forwardRef(function Post(props, ref) {
 	}
 
 	const toggleSave = () => {
-		dispatch(toggleSavePost(post._id))
+		dispatch(toggleSavePost({ postId: post._id, currentUser: user._id }))
 	}
 	// end post menu handler
 
