@@ -18,20 +18,22 @@ import SavedPage from './pages/SavedPage'
 import SearchResultPage from './pages/SearchResultPage'
 import SettingsPage from './pages/SettingsPage'
 import SignUpPage from './pages/SignUpPage'
+import { setProfileEdited } from './redux/features/auth-slice'
 import { updateProfile } from './redux/features/post-slice'
 import Layout from './shared/Layout'
 
 function App() {
 	const isLogin = useSelector(state => !!state.auth.user)
-	const { user } = useSelector(state => state.auth)
+	const { user, profileEdited } = useSelector(state => state.auth)
 	const dispatch = useDispatch()
 	const theme = useTheme()
 
 	useEffect(() => {
-		if (!!user) {
+		if (profileEdited ) {
 			dispatch(updateProfile(user))
+			dispatch(setProfileEdited(false))
 		}
-	}, [user, dispatch])
+	}, [profileEdited, user, dispatch])
 
 	return (
 		<div>

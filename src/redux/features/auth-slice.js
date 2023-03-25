@@ -12,6 +12,7 @@ const initialState = {
 	authPending: 'false',
 	user: null,
 	exp: null,
+	profileEdited: false,
 	tokenRenewed: false,
 }
 
@@ -128,7 +129,11 @@ export const editUser = createAsyncThunk(
 const authSlice = createSlice({
 	name: 'auth',
 	initialState: initialState,
-	reducers: {},
+	reducers: {
+		setProfileEdited: (state, { payload }) => {
+			state.profileEdited = payload
+		}
+	},
 	extraReducers: builder => {
 		builder
 			// signup request
@@ -200,6 +205,7 @@ const authSlice = createSlice({
 			// editUser request
 			.addCase(editUser.fulfilled, (state, action) => {
 				state.user = action.payload.user
+				state.profileEdited = true
 
 				let userInLocal = localStorage.getItem('user')
 				let userInSession = sessionStorage.getItem('user')
@@ -212,5 +218,7 @@ const authSlice = createSlice({
 			})
 	},
 })
+
+export const { setProfileEdited } = authSlice.actions
 
 export default authSlice.reducer
