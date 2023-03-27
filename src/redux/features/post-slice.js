@@ -197,7 +197,8 @@ export const deletePost = createAsyncThunk(
 export const followUser = createAsyncThunk(
 	'followUser',
 	async (payload, thunkAPI) => {
-		const response = await followUserRequest(payload)
+		const { userId } = payload
+		const response = await followUserRequest(userId)
 		if (response.ok) {
 			return response
 		}
@@ -208,7 +209,8 @@ export const followUser = createAsyncThunk(
 export const unfollowUser = createAsyncThunk(
 	'unfollowUser',
 	async (payload, thunkAPI) => {
-		const response = await unfollowUserRequest(payload)
+		const { userId } = payload
+		const response = await unfollowUserRequest(userId)
 		if (response.ok) {
 			return response
 		}
@@ -689,128 +691,138 @@ const postSlice = createSlice({
 			})
 
 			// followUser Request
-			.addCase(followUser.fulfilled, (state, action) => {
-				const payload = action.payload
+			.addCase(followUser.pending, (state, action) => {
+				const { userId, currentUser } = action.meta.arg
 
-				if (
-					state.profileUser &&
-					state.profileUser._id === payload.following._id
-				) {
-					state.profileUser = payload.following
+				if (state.profileUser && state.profileUser._id === userId) {
+					const profileUser = state.profileUser
+
+					if (!profileUser.followers.includes(currentUser)) {
+						profileUser.followers.push(currentUser)
+						profileUser.noOfFollowers++
+						state.profileUser = profileUser
+					}
 				}
 
 				if (
 					state.userPosts?.docs?.length > 0 &&
-					state.userPosts?.docs[0].author._id === payload.following._id
+					state.profileUser._id === userId
 				) {
-					const userPosts = state.userPosts.docs.map(doc => {
-						doc.author.followers.push(payload.user._id)
+					const Posts = state.userPosts.docs.map(doc => {
+						doc.author.followers.push(currentUser)
 						return doc
 					})
 
-					state.userPosts.docs = userPosts
+					state.userPosts.docs = Posts
 				}
 
 				if (state.globalPosts?.docs?.length > 0) {
-					const globalPosts = state.globalPosts.docs.map(doc => {
-						if (doc.author._id === payload.following._id) {
-							doc.author.followers.push(payload.user._id)
+					const Posts = state.globalPosts.docs.map(doc => {
+						if (doc.author._id === userId) {
+							doc.author.followers.push(currentUser)
 						}
 						return doc
 					})
 
-					state.globalPosts.docs = globalPosts
+					state.globalPosts.docs = Posts
 				}
 
 				if (state.followingPosts?.docs?.length > 0) {
-					const followingPosts = state.followingPosts.docs.map(doc => {
-						if (doc.author._id === payload.following._id) {
-							doc.author.followers.push(payload.user._id)
+					const Posts = state.followingPosts.docs.map(doc => {
+						if (doc.author._id === userId) {
+							doc.author.followers.push(currentUser)
 						}
 						return doc
 					})
 
-					state.followingPosts.docs = followingPosts
+					state.followingPosts.docs = Posts
 				}
 
 				if (state.savedPosts?.docs?.length > 0) {
-					const savedPosts = state.savedPosts.docs.map(doc => {
-						if (doc.author._id === payload.following._id) {
-							doc.author.followers.push(payload.user._id)
+					const Posts = state.savedPosts.docs.map(doc => {
+						if (doc.author._id === userId) {
+							doc.author.followers.push(currentUser)
 						}
 						return doc
 					})
 
-					state.savedPosts.docs = savedPosts
+					state.savedPosts.docs = Posts
 				}
 			})
 
 			// unfollowUser Request
-			.addCase(unfollowUser.fulfilled, (state, action) => {
-				const payload = action.payload
+			.addCase(unfollowUser.pending, (state, action) => {
+				const { userId, currentUser } = action.meta.arg
 
-				if (
-					state.profileUser &&
-					state.profileUser._id === payload.unfollowing._id
-				) {
-					state.profileUser = payload.unfollowing
+				if (state.profileUser && state.profileUser._id === userId) {
+					const profileUser = state.profileUser
+
+					const indexOfCurrUser = profileUser.followers.findIndex(
+						user => user === currentUser
+					)
+
+					if (indexOfCurrUser !== -1) {
+						profileUser.followers.splice(indexOfCurrUser, 1)
+						profileUser.noOfFollowers--
+						state.profileUser = profileUser
+					}
 				}
 
 				if (
 					state.userPosts?.docs?.length > 0 &&
-					state.userPosts?.docs[0].author._id === payload.unfollowing._id
+					state.profileUser._id === userId
 				) {
-					const userPosts = state.userPosts.docs.map(doc => {
+					const Posts = state.userPosts.docs.map(doc => {
 						const foundIndex = doc.author.followers.findIndex(
-							f => f === payload.user._id
+							user => user === currentUser
 						)
 						doc.author.followers.splice(foundIndex, 1)
 						return doc
 					})
 
-					state.userPosts.docs = userPosts
+					state.userPosts.docs = Posts
 				}
 
 				if (state.globalPosts?.docs?.length > 0) {
-					const globalPosts = state.globalPosts.docs.map(doc => {
-						if (doc.author._id === payload.unfollowing._id) {
+					const Posts = state.globalPosts.docs.map(doc => {
+						if (doc.author._id === userId) {
 							const foundIndex = doc.author.followers.findIndex(
-								f => f === payload.user._id
+								f => f === currentUser
 							)
 							doc.author.followers.splice(foundIndex, 1)
 						}
 						return doc
 					})
 
-					state.globalPosts.docs = globalPosts
+					state.globalPosts.docs = Posts
 				}
 
 				if (state.followingPosts?.docs?.length > 0) {
-					const followingPosts = state.followingPosts.docs.map(doc => {
-						if (doc.author._id === payload.unfollowing._id) {
+					const Posts = state.followingPosts.docs.map(doc => {
+						if (doc.author._id === userId) {
 							const foundIndex = doc.author.followers.findIndex(
-								f => f === payload.user._id
+								f => f === currentUser
 							)
 							doc.author.followers.splice(foundIndex, 1)
 						}
 						return doc
 					})
 
-					state.followingPosts.docs = followingPosts
+					state.followingPosts.docs = Posts
 				}
 
 				if (state.savedPosts?.docs?.length > 0) {
-					const savedPosts = state.savedPosts.docs.map(doc => {
-						if (doc.author._id === payload.unfollowing._id) {
+					const Posts = state.savedPosts.docs.map(doc => {
+						if (doc.author._id === userId) {
 							const foundIndex = doc.author.followers.findIndex(
-								f => f === payload.user._id
+								f => f === currentUser
 							)
 							doc.author.followers.splice(foundIndex, 1)
 						}
 						return doc
 					})
 
-					state.savedPosts.docs = savedPosts
+					state.savedPosts.docs = Posts
 				}
 			})
 	},

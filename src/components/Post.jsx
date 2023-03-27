@@ -37,7 +37,12 @@ import relativeTime from '../helper/relativeTime'
 import EditPostModal from './EditPostModal'
 import DeletePostModal from './DeletePostModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { followUser, toggleLikePost, toggleSavePost, unfollowUser } from '../redux/features/post-slice'
+import {
+	followUser,
+	toggleLikePost,
+	toggleSavePost,
+	unfollowUser,
+} from '../redux/features/post-slice'
 
 const Post = forwardRef(function Post(props, ref) {
 	const { post } = props
@@ -98,15 +103,15 @@ const Post = forwardRef(function Post(props, ref) {
 	}
 
 	const follow = () => {
-		dispatch(followUser(post.author._id))
+		dispatch(followUser({userId: post.author._id, currentUser: user._id}))
 	}
 	const unfollow = e => {
-		dispatch(unfollowUser(post.author._id))
+		dispatch(unfollowUser({ userId: post.author._id, currentUser: user._id }))
 		handleClose2(e)
 	}
 
 	const toggleLike = () => {
-		dispatch(toggleLikePost({postId: post._id, currentUser: user._id}))
+		dispatch(toggleLikePost({ postId: post._id, currentUser: user._id }))
 	}
 
 	const toggleSave = () => {

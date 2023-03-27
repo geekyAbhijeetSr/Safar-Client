@@ -33,9 +33,9 @@ function ProfileCard({ profileUser }) {
 
 	const followOrUnfollow = () => {
 		if (profileUser.followers.includes(user._id)) {
-			dispatch(unfollowUser(profileUser._id))
+			dispatch(unfollowUser({userId: profileUser._id, currentUser: user._id}))
 		} else {
-			dispatch(followUser(profileUser._id))
+			dispatch(followUser({ userId: profileUser._id, currentUser: user._id }))
 		}
 	}
 
