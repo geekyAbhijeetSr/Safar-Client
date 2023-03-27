@@ -82,7 +82,10 @@ function SignUpPage() {
 					flexDirection: 'row',
 					background: theme.palette.background.paper,
 					overflow: 'hidden',
-					filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.05))',
+					filter: matchSmUp
+						? 'drop-shadow(0px 2px 8px rgba(0,0,0,0.05))'
+						: 'none',
+					marginTop: matchSmUp ? 0 : '-4rem',
 				}}
 			>
 				<Box
@@ -171,7 +174,10 @@ function SignUpPage() {
 							InputProps={{
 								endAdornment: (
 									<InputAdornment position='end'>
-										<IconButton onClick={() => handleClickShowPassword('pass')} edge='end'>
+										<IconButton
+											onClick={() => handleClickShowPassword('pass')}
+											edge='end'
+										>
 											{showPassword.pass ? (
 												<VisibilityOffOutlined />
 											) : (
@@ -191,13 +197,24 @@ function SignUpPage() {
 							type={showPassword.conf ? 'text' : 'password'}
 							onChange={formik.handleChange}
 							value={formik.values.confirm_password}
-							error={!!(formik.touched.confirm_password && formik.errors.confirm_password)}
-							helperText={formik.touched.confirm_password && formik.errors.confirm_password}
+							error={
+								!!(
+									formik.touched.confirm_password &&
+									formik.errors.confirm_password
+								)
+							}
+							helperText={
+								formik.touched.confirm_password &&
+								formik.errors.confirm_password
+							}
 							onBlur={formik.handleBlur}
 							InputProps={{
 								endAdornment: (
 									<InputAdornment position='end'>
-										<IconButton onClick={() => handleClickShowPassword('conf')} edge='end'>
+										<IconButton
+											onClick={() => handleClickShowPassword('conf')}
+											edge='end'
+										>
 											{showPassword.conf ? (
 												<VisibilityOffOutlined />
 											) : (
