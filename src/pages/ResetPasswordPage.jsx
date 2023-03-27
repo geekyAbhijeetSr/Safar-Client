@@ -145,7 +145,10 @@ function ResetPasswordPage() {
 						flexDirection: 'row',
 						background: theme.palette.background.paper,
 						overflow: 'hidden',
-						filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.05))',
+						filter: matchSmUp
+							? 'drop-shadow(0px 2px 8px rgba(0,0,0,0.05))'
+							: 'none',
+						marginTop: matchSmUp ? 0 : '-4rem',
 					}}
 				>
 					{matchMdUp && (
@@ -281,7 +284,10 @@ function ResetPasswordPage() {
 						flexDirection: 'row',
 						background: theme.palette.background.paper,
 						overflow: 'hidden',
-						filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.05))',
+						filter: matchSmUp
+							? 'drop-shadow(0px 2px 8px rgba(0,0,0,0.05))'
+							: 'none',
+						marginTop: matchSmUp ? 0 : '-4rem',
 					}}
 				>
 					{matchMdUp && (
