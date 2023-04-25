@@ -12,7 +12,7 @@ import {
 	Stack,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material'
 import safar from '../assets/images/safar.jpg'
 import { useFormik } from 'formik'
@@ -23,6 +23,7 @@ import { login } from '../redux/features/auth-slice'
 function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false)
 	const [rememberMe, setRememberMe] = useState(false)
+	const location = useLocation()
 
 	document.title = 'Safar - Welcome'
 
@@ -50,6 +51,7 @@ function LoginPage() {
 			dispatch(login(payload))
 		},
 	})
+	const { setFieldValue } = formik
 
 	const handleClickShowPassword = () => {
 		setShowPassword(prevState => !prevState)
@@ -61,6 +63,18 @@ function LoginPage() {
 			navigate('/')
 		}
 	}, [isLogin, navigate])
+
+	useEffect(() => {
+		const searchParams = new URLSearchParams(location.search)
+		const query = searchParams.get('demo')
+		if (query === 'true') {
+			setFieldValue(
+				'username_or_email',
+				process.env.REACT_APP_DEMO_USER_ID
+			)
+			setFieldValue('password', process.env.REACT_APP_DEMO_USER_PASS)
+		}
+	}, [location.search, setFieldValue])
 
 	const textfieldSx = {
 		width: '100%',
