@@ -18,9 +18,11 @@ import React, { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import changePasswordValidation from '../validations/changePasswordValidation'
+import { useSelector } from 'react-redux'
 
 function ChangePasswordPage() {
 	const navigate = useNavigate()
+	const user = useSelector(state => state.auth.user)
 	const theme = useTheme()
 	const [showPassword, setShowPassword] = useState({
 		old: false,
@@ -29,7 +31,7 @@ function ChangePasswordPage() {
 	})
 
 	document.title = 'Safar - Change Password'
-	
+
 	const formik = useFormik({
 		initialValues: {
 			old_password: '',
@@ -38,33 +40,37 @@ function ChangePasswordPage() {
 		},
 		validationSchema: changePasswordValidation,
 		onSubmit: (values, action) => {
-				;(async () => {
-					const request = () => {
-						return fetch(
-							`${process.env.REACT_APP_API_URL}/auth/change-password`,
-							{
-								credentials: 'include',
-								method: 'PUT',
-								headers: {
-									'Content-Type': 'application/json',
-								},
-								body: JSON.stringify(values),
-							}
-						).then(res => res.json())
-					}
+			;(async () => {
+				if (user.username === 'johndoe') {
+					toast.error('This action is not allowed in demo')
+					return
+				}
+				const request = () => {
+					return fetch(
+						`${process.env.REACT_APP_API_URL}/auth/change-password`,
+						{
+							credentials: 'include',
+							method: 'PUT',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify(values),
+						}
+					).then(res => res.json())
+				}
 
-					await toast.promise(request(), {
-						loading: 'Saving...',
-						success: res => {
-							if (!res.ok) throw new Error(res.errorMsg)
-							action.resetForm()
-							return 'Password changed successfully!'
-						},
-						error: err => {
-							return err.toString().split(': ')[1]
-						},
-					})
-				})()
+				await toast.promise(request(), {
+					loading: 'Saving...',
+					success: res => {
+						if (!res.ok) throw new Error(res.errorMsg)
+						action.resetForm()
+						return 'Password changed successfully!'
+					},
+					error: err => {
+						return err.toString().split(': ')[1]
+					},
+				})
+			})()
 		},
 	})
 
@@ -165,8 +171,14 @@ function ChangePasswordPage() {
 					onChange={formik.handleChange}
 					value={formik.values.confirm_password}
 					onBlur={formik.handleBlur}
-					error={!!(formik.touched.confirm_password && formik.errors.confirm_password)}
-					helperText={formik.touched.confirm_password && formik.errors.confirm_password}
+					error={
+						!!(
+							formik.touched.confirm_password && formik.errors.confirm_password
+						)
+					}
+					helperText={
+						formik.touched.confirm_password && formik.errors.confirm_password
+					}
 					InputProps={{
 						endAdornment: (
 							<InputAdornment position='end'>

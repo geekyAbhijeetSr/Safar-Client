@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import CropperModal from '../components/CropperModal'
 import { editUser } from '../redux/features/auth-slice'
 import editProfileValidation from '../validations/editProfileValidation'
+import toast from 'react-hot-toast'
 
 function EditProfilePage() {
 	const user = useSelector(state => state.auth.user)
@@ -41,7 +42,11 @@ function EditProfilePage() {
 			bio: user.bio,
 		},
 		validationSchema: editProfileValidation,
-		onSubmit: async (values, action) => {
+		onSubmit: (values, action) => {
+			if (user.username === 'johndoe') {
+				toast.error('This action is not allowed in demo')
+				return
+			}
 			const formData = new FormData()
 
 			if (croppedProfileImage) {
